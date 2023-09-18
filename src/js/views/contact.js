@@ -1,0 +1,56 @@
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+
+import { Context } from "../store/appContext";
+
+import "../../styles/demo.css";
+
+export const Contact = () => {
+    const {store, actions} = useContext(Context);
+
+    return (
+        <>       
+        <div className="container">
+            <div className="mb-3 d-flex justify-content-end">
+                <Link to="/addcontact">
+                    <button >
+                        Add a new contact
+                    </button>
+                </Link>
+            </div>
+            <ul className="list-group">
+            {store.contact.map((item, index) => {
+					return (
+						<li
+							key={index}
+							className="list-group-item d-flex justify-content-between"
+							style={{ background: item.background }}
+                        >
+                        <div className="d-flex">
+                            <div className="me-2">
+                                PHOTO
+                            </div>
+                            <div>
+                                {item.name}
+                                <br></br>
+                                {item.address}
+                                <br></br>
+                                {item.phone}
+                                <br></br>
+                                {item.email}
+                            </div>
+                        </div>
+                        <div>
+                            <span>Edit</span>
+                            <span onClick={() => actions.deleteContact(index)}> Bin</span>
+                        </div>
+						</li>
+					);
+				})}
+            </ul>
+        </div>
+        </>
+    )
+
+
+}

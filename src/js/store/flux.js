@@ -1,6 +1,18 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			// MY STORE/STATE
+			contact: [
+				{
+					name: "Adam Smith",
+					address: "123 Street",
+					phone: "02198574238",
+					email: "email@email.com", 
+					background: "white"
+				}
+			],
+
+			// DEMO STORE/STATE
 			demo: [
 				{
 					title: "FIRST",
@@ -15,6 +27,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+			// MY FUNCTIONS
+			deleteContact: (index) => {
+				const store = getStore();
+				//** */ HOW TO DELETE CONTACT OBJECT FROM ARRAY?
+				// Look at todo list project
+				});
+
+				//reset the global store
+				setStore({ demo: demo });
+			},
+
+
+			// DEMO FUNCTIONS
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");

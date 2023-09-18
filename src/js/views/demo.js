@@ -9,6 +9,7 @@ export const Demo = () => {
 	const { store, actions } = useContext(Context);
 
 	return (
+
 		<div className="container">
 			<ul className="list-group">
 				{store.demo.map((item, index) => {
@@ -37,6 +38,12 @@ export const Demo = () => {
 			<br />
 			<Link to="/">
 				<button className="btn btn-primary">Back home</button>
+			</Link>
+			<Link to="/contact">
+				CONTACT PAGE
+			</Link>
+			<Link to="/addcontact">
+				ADD CONTACT PAGE
 			</Link>
 		</div>
 	);
