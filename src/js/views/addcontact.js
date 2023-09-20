@@ -13,39 +13,48 @@ export const AddContact = () => {
         <div className="container">
             <h1>Add a new contact</h1>
             <form className="d-flex flex-column">
-                <label for="name" className="mb-2">
+                <label htmlFor="name">
                     Full Name
                 </label>
                 <input
                     id="name"
                     placeholder="Full Name"
                     className="mb-3"
+                    value={store.fullName}
+                    onChange={(event) => actions.setInput(event.target.value, "name")} 
+
                 />
-                <label for="address" className="mb-2">
+                <label htmlFor="address">
                     Address
                 </label>
                 <input
                     id="address"
                     placeholder="Address"
                     className="mb-3"
+                    value={store.address}
+                    onChange={(event) => actions.setInput(event.target.value, "address")}   
                 />
-                <label for="phone" className="mb-2">
+                <label htmlFor="phone">
                     Phone Number
                 </label>
                 <input
                     id="phone"
                     placeholder="Phone Number"
                     className="mb-3"
+                    value={store.phoneNumber}
+                    onChange={(event) => actions.setInput(event.target.value, "phone")}   
                 />
-                <label for="email" className="mb-2">
+                <label htmlFor="email">
                     Email 
                 </label>
                 <input
                     id="email"
                     placeholder="Email"
                     className="mb-3"
+                    value={store.email}
+                    onChange={(event) => actions.setInput(event.target.value, "email")}   
                 />
-                <button>
+                <button onClick={() => actions.submitInput()}>
                     Add
                 </button>           
             </form>
@@ -53,7 +62,6 @@ export const AddContact = () => {
                     View all Contacts
             </Link>
         </div>
-        
         </>
     )
 

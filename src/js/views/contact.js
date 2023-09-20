@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
+import { Message } from "../component/message";
 
 import "../../styles/demo.css";
 
@@ -18,36 +19,50 @@ export const Contact = () => {
                     </button>
                 </Link>
             </div>
-            <ul className="list-group">
-            {store.contact.map((item, index) => {
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							style={{ background: item.background }}
-                        >
-                        <div className="d-flex">
-                            <div className="me-2">
-                                PHOTO
-                            </div>
+            {
+                store.toggle === true?
+                <Message/>
+                :
+                <ul className="list-group">
+                {store.contact.map((item, index) => {
+                        return (
+                            <>
                             <div>
-                                {item.name}
-                                <br></br>
-                                {item.address}
-                                <br></br>
-                                {item.phone}
-                                <br></br>
-                                {item.email}
+                                    Contact #{index + 1}
                             </div>
-                        </div>
-                        <div>
-                            <span>Edit</span>
-                            <span onClick={() => actions.deleteContact(index)}> Bin</span>
-                        </div>
-						</li>
-					);
-				})}
-            </ul>
+                            <li
+                                key={index}
+                                className="list-group-item d-flex justify-content-between"
+                                style={{ background: item.background }}
+                            >
+                                
+                                <div className="d-flex">
+                                    <div className="me-2">
+                                        PHOTO
+                                    </div>
+                                    <div>
+                                        {item.full_name}
+                                        <br></br>
+                                        {item.address}
+                                        <br></br>
+                                        {item.phone}
+                                        <br></br>
+                                        {item.email}
+                                    </div>
+                                </div>
+                                <div>
+                                    <span>Edit</span>
+                                    <span onClick={() => actions.deleteContact(index)}> Bin</span>
+                                </div>
+                            </li>
+                            </>
+                        );
+                    })}
+                </ul>
+            }
+                
+            
+            
         </div>
         </>
     )

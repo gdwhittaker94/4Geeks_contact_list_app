@@ -10,9 +10,9 @@ const injectContext = PassedComponent => {
 		// the global state, an object - this will be passed as the context value
 		const [state, setState] = useState(
 			getState({
-				getStore: () => state.store, // Allows us to get access to the store
-				getActions: () => state.actions, // Allows us to get access to the actions
-				setStore: updatedStore => // Sets global state 
+				getStore: () => state.store, // Gets us to access to the store
+				getActions: () => state.actions, // Gets us to access to the actions
+				setStore: updatedStore => // Updates store (global state)
 					setState({
 						store: Object.assign(state.store, updatedStore),
 						actions: { ...state.actions }
@@ -22,7 +22,10 @@ const injectContext = PassedComponent => {
 
 		useEffect(() => {
 			
+			// const actions = getActions();
 			
+			state.actions.loadSomeData()
+
 			
 			/**
 			 * EDIT THIS!
@@ -39,6 +42,7 @@ const injectContext = PassedComponent => {
 			<Context.Provider value={state}>
 				<PassedComponent {...props} />
 			</Context.Provider>
+			// PassesComponent = App, thus our App is enveloped by our Context making Context available everywhere 
 		);
 	};
 	return StoreWrapper;

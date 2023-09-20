@@ -8,7 +8,6 @@ import { Single } from "./views/single";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
-import { Footer } from "./component/footer";
 import { Contact } from "./views/contact";
 import { AddContact } from "./views/addcontact";
 
@@ -31,11 +30,12 @@ const Layout = () => {
 						<Route path="/addcontact" element={<AddContact/>}/>
 						<Route path="*" element={<h1>Not found!</h1>} />
 					</Routes>
-					<Footer />
 				</ScrollToTop>
 			</BrowserRouter>
 		</div>
 	);
 };
 
+// We pass Layout component to injectContext(), which gets enveloped by Context. 
+// Thus the the context is available throughout our application 
 export default injectContext(Layout);
