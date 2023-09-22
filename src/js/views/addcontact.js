@@ -1,18 +1,32 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
-import "../../styles/demo.css";
+import "../../styles/index.css"; 
+
+// TODO 
+// - Create state for other inputs, add onChange functions for them
+// - fetch call onSubmit button --> update userContactList
+// - create a state object replicating "newContact" store object 
+
 
 export const AddContact = () => {
     const {store, actions} = useContext(Context);
+    const [fullName, setFullName] = useState("")
+    function setNewContact() {
+        
+    }
 
     return (
         <>
         <div className="container">
             <h1>Add a new contact</h1>
-            <form className="d-flex flex-column">
+            <form className="d-flex flex-column" onSubmit={(e) => {
+                e.preventDefault();
+                console.log("Fullname", fullName)
+            }}>
                 <label htmlFor="name">
                     Full Name
                 </label>
@@ -20,8 +34,10 @@ export const AddContact = () => {
                     id="name"
                     placeholder="Full Name"
                     className="mb-3"
-                    value={store.fullName}
-                    onChange={(event) => actions.setInput(event.target.value, "name")} 
+                    onChange={(e) => {
+                        console.log(e.target.value)
+                        setFullName(e.target.value)
+                    }}
 
                 />
                 <label htmlFor="address">
@@ -31,8 +47,7 @@ export const AddContact = () => {
                     id="address"
                     placeholder="Address"
                     className="mb-3"
-                    value={store.address}
-                    onChange={(event) => actions.setInput(event.target.value, "address")}   
+                   
                 />
                 <label htmlFor="phone">
                     Phone Number
@@ -41,8 +56,6 @@ export const AddContact = () => {
                     id="phone"
                     placeholder="Phone Number"
                     className="mb-3"
-                    value={store.phoneNumber}
-                    onChange={(event) => actions.setInput(event.target.value, "phone")}   
                 />
                 <label htmlFor="email">
                     Email 
@@ -51,14 +64,11 @@ export const AddContact = () => {
                     id="email"
                     placeholder="Email"
                     className="mb-3"
-                    value={store.email}
-                    onChange={(event) => actions.setInput(event.target.value, "email")}   
                 />
-                <button onClick={() => actions.submitInput()}>
-                    Add
-                </button>           
+                  <input type="submit" value="Submit" />
+        
             </form>
-            <Link to="/contact">
+            <Link to={`/listofcontact/${store.userID}`}>
                     View all Contacts
             </Link>
         </div>

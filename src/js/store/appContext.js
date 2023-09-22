@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
+import { ContactBookList } from "../views/contactbooklist.js";
 
 // Where we initialize our context. By default = null. Don't edit. 
 export const Context = React.createContext(null);
@@ -21,10 +22,7 @@ const injectContext = PassedComponent => {
 		);
 
 		useEffect(() => {
-			
-			// const actions = getActions();
-			
-			state.actions.loadSomeData()
+			state.actions.fetchContactBooks();
 
 			
 			/**
