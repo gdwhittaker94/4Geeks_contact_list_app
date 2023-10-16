@@ -16,7 +16,7 @@ export const AddContact = () => {
     const {store, actions} = useContext(Context);
     const [fullName, setFullName] = useState("")
     function setNewContact() {
-        
+
     }
 
     return (
