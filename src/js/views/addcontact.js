@@ -10,6 +10,7 @@ import "../../styles/index.css";
 // - Create state for other inputs, add onChange functions for them
 // - fetch call onSubmit button --> update userContactList
 // - create a state object replicating "newContact" store object 
+// 
 
 
 export const AddContact = () => {
