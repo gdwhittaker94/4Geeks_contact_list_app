@@ -1,51 +1,46 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
 export const ContactBookList = () => {
     const { store, actions } = useContext(Context);
-
+    const [inputValue, setInputValue] = useState("");
 
     return (
         <div className="container">
             <div className="my-3">
                 <input
                     placeholder="Create new contacts book"
-                    value={store.newContactBook}
-                    onChange={(e) => actions.setNewContactBook(e.target.value)}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
                 />
-                {/* TERNARY NOT WORKING - doesn't undo 'disabled' once typing */}
-                {store.newContactBook === null?
-                <button onClick={() => actions.submitNewContactBook()}> 
-                    Create
-                </button>
-                :
-                <button onClick={() => actions.submitNewContactBook()}>
-                    Create
-                </button>
+                {inputValue === "" ?
+                    <p>Type something to enter</p>
+                    :
+                    <button onClick={() => actions.submitNewContactBook(inputValue)}>
+                        Create
+                    </button>
                 }
-                
+
             </div>
             {/* Agendas List */}
             <ul className="list-group">
                 {store.contactBooks.map((item, index) => {
                     return (
-                        // TODO: WHEN YOU CLICK NAME IT GOES TO THEIR CONTACT LIST
-                            <li key={index}>
-                                <div>
-                                    <span>Agenda #{index + 1}: 
-                                        <Link to={`/listofcontact/${item}`} onClick={() => {actions.setID(item)}}>
-                                          {item}
-                                        </Link>
-                                    </span>
-                                </div>
-                            </li>
+                        <li key={index}>
+                            <div>
+                                <span>Agenda #{index + 1}:
+                                    <Link to={`/listofcontact/${item}`} onClick={() => { actions.setBookNameID(item) }}>
+                                        {item}
+                                    </Link>
+                                </span>
+                            </div>
+                        </li>
                     )
                 })}
             </ul>
-            
+
         </div>
     )
 }

@@ -1,0 +1,7 @@
+.blocked {
+    pointer-events: none;
+}
+
+div:has(show) {
+    display: none; 
+}
