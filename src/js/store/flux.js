@@ -5,6 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			toggle: true,
 			contactBooks: [],
 			bookName: "",
+			inputValueToggle: false, 
 			exampleContact: {
 				full_name: "Joe Bloggs",
 				email: "example@gmail.com",
@@ -76,10 +77,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
+					actions.resetInputBox();
 					actions.fetchContactBooks();
 				} catch (error) {
 					console.error("Error:", error);
 				}
+			},
+
+			resetInputBox: () => {
+				const store = getStore();
+				setStore({ inputValueToggle: true });
 			},
 
 			setBookNameID: (ID) => {

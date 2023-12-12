@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/index.css";
@@ -6,6 +6,12 @@ import "../../styles/index.css";
 export const ContactBookList = () => {
     const { store, actions } = useContext(Context);
     const [inputValue, setInputValue] = useState("");
+
+    useEffect(() => {
+        store.inputValueToggle === true? setInputValue("") : null
+        store.inputValueToggle = false
+    }, [store.inputValueToggle])
+
 
     return (
         <div className="container">
