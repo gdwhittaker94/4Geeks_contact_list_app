@@ -15,6 +15,15 @@ export const ListOfContact = () => {
     const [contactPhone, setPhone] = useState("")
     const [contactEmail, setEmail] = useState("")
 
+    /* TODO
+        - Placeholder values show first contact info, not the selected contact's info: fix/change/remove
+        - Contact ID numbers are showing for some reason 
+        - Delete button deletes the contacts from top to bottom, doesn't delete the contact in question 
+
+        * Errors must be to do with how I'm handling the list of contacts and in what order I'm manipulating them 
+        ... Otherwise, I have all the desired functionality 
+    */
+
     useEffect(() => {
         actions.openContactBook(backUpId);
     }, [])
@@ -34,7 +43,7 @@ export const ListOfContact = () => {
             <div className="mb-3 d-flex justify-content-between">
                 <h1>{id}'s List of Contacts</h1>
                 <div>
-                    <Link to="/addcontact">
+                    <Link to={`/addcontact/${id}`}>
                         <button >
                             Add a new contact
                         </button>
@@ -45,7 +54,7 @@ export const ListOfContact = () => {
             <ul className="list-group">
                 {store.userContactList.map((item, index) => {
                     return (
-                        <div key={item.id}>
+                        <div key={index}>
                             <div className='mt-3'>
                                 Contact #{index + 1}
                             </div>

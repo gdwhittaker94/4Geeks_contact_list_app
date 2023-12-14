@@ -2,11 +2,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			// --- MY STORE/STATE -----------------------------------
-			toggle: true,
 			contactBooks: [],
 			bookName: "",
-			inputValueToggle: false, 
-			contactUpdated: false, 
+			inputValueToggle: false,
+			userCreatedToggle: false,
+			contactUpdated: false,
 			exampleContact: {
 				full_name: "Joe Bloggs",
 				email: "example@gmail.com",
@@ -22,19 +22,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			bookNameID: null,
 			userContactList: [],
-			///////// DEMO STORE/STATE ////////////
-			// demo: [
-			// 	{
-			// 		title: "FIRST",
-			// 		background: "white",
-			// 		initial: "white"
-			// 	},
-			// 	{
-			// 		title: "SECOND",
-			// 		background: "white",
-			// 		initial: "white"
-			// 	}
-			// ]
 		},
 		actions: {
 			// --- CONTACT BOOKS LIST PAGE ---------------------------------
@@ -92,7 +79,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setBookNameID: (ID) => {
 				const store = getStore();
 				setStore({ bookNameID: ID });
-				store.newContact.agenda_slug != ""? setStore({newContact: {agenda_slug: ""}}) : null;
+				store.newContact.agenda_slug != "" ? setStore({ newContact: { agenda_slug: "" } }) : null;
 				setStore({
 					newContact: {
 						agenda_slug: ID
@@ -103,21 +90,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// --- LIST OF CONTACTS PAGE -----------------------------------
 			openContactBook: async (backUpId) => {
 				const store = getStore();
-				store.bookNameID === null? setStore({ bookNameID: backUpId }) : null;
+				store.bookNameID === null ? setStore({ bookNameID: backUpId }) : null;
 				const response = await fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${store.bookNameID}`);
 				const responseData = await response.json();
 				setStore({ userContactList: responseData });
 			},
 
 			updateContact: async (name, address, phone, email, bookName, contactId) => {
-				console.log("what we get:", name, address, phone, email, bookName, contactId)
 				const store = getStore();
 				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${contactId}`;
-				
+
 				// fetch
 				try {
 					const response = await fetch(fetchUrl, {
-						method: "PUT", 
+						method: "PUT",
 						headers: {
 							'Content-Type': 'application/json'
 						},
@@ -137,7 +123,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
-					setStore({contactUpdated: true})
+					setStore({ contactUpdated: true })
 				} catch (error) {
 					console.error("Error:", error)
 				}
@@ -152,7 +138,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const response = await fetch(fetchUrl, {
 						method: "DELETE",
 					})
-					if(!response.ok) {
+					if (!response.ok) {
 						console.error("Error:", response.status)
 						throw new Error(response.statusText)
 					}
@@ -164,9 +150,66 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error("Error:", error);
 				}
-			}, 
+			},
 
 			// --- ADD NEW CONTACT PAGE ------------------------------------
+			createNewContact: async (name, address, phone, email) => {
+				const store = getStore();
+				const actions = getActions();
+
+				// console.log("what we get:", name, address, phone, email)
+				// console.log("bookName:", store.bookName); --> NO VALUE HERE!
+				// console.log("newContactAgendaSlug:", store.newContact.agenda_slug)
+
+				// console.log("pre-newCont object:", store.newContact)
+
+				setStore({
+					newContact: {
+						...store.newContact,
+						full_name: name,
+						email: email,
+						address: address,
+						phone: phone,
+					}
+				})
+
+				// console.log("post-newCont object:", store.newContact)
+
+				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/";
+				const fetchBody = store.newContact;
+
+				// fetch
+				try {
+					const response = await fetch(fetchURL, {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(fetchBody)
+					})
+					if (!response.ok) {
+						throw new Error(response.statusText)
+					}
+					console.log("response:", response)
+					const responseData = await response.json();
+					console.log("responseData:", responseData)
+					actions.updateContactsList();
+				} catch (error) {
+					console.error("Error:", error);
+				}
+			},
+			updateContactsList: () => {
+				const store = getStore();
+				// console.log("pre-updatedContacts:", store.userContactList)
+				setStore({ userContactList: [...store.userContactList, store.newContact] });
+				// console.log("post-updatedContacts:", store.userContactList)
+				setStore(store.userCreatedToggle = true);
+				// console.log("toggle:", store.userCreatedToggle)
+			},
+
+			// DELETE BELOW
+
+
 			setNewContactInput: (value, inputName) => {
 				const store = getStore();
 				if (inputName === "name") {
@@ -184,29 +227,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(store.newContact.full_name)
 			},
 			submitNewContactInput: async () => {
-				const store = getStore();
-				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/"
-				try {
-					const agendaResponse = await fetch(fetchURL, {
-						method: "POST",
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(store.newContact),
-					});
-					// if bad response 
-					if (!agendaResponse.ok) {
-						throw new Error(agendaResponse.statusText)
-					} // else (good response)	
-					const agendaData = await agendaResponse.json();
-					// Combine exisiting contacts with new contact first
-					const updatedContacts = [...store.contact, agendaData];
-					// Now update 'contact' with this new array
-					setStore({ contact: updatedContacts });
-					setStore(store.toggle = false);
-				} catch (error) {
-					console.error("Error:", error);
-				}
+
 			},
 		}
 	};
