@@ -20,25 +20,13 @@ export const ListOfContact = () => {
     }, [])
 
     useEffect(() => {
-        actions.setCurrentContactId(contactId);
-        actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, backUpId);
+        actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, backUpId, contactId);
     }, [contactId])
-    
-    console.log("id", contactId)
 
-    /* TODO
-        x Modal pops up on edit button click -> displays current info 
-        x Link those input to new useState variables (*value = onChange etc)
-        X Submit sends those values to a function in the store 
-            --> works, but do I need to setCurrentContactId or can just send it straight across as a param?
-            
-        - Function in the store does a PUT request
-        - Changes a toggle in store to true
-        - UseEffect on this page: if true do a new fetch call 
-        - Should display all current contacts + contact with changed details 
-
-        - Then check add new contact button and page does what it's supposed to do
-    */
+    useEffect(() => {
+        store.contactUpdated === true ? actions.openContactBook(backUpId) : null
+        store.contactUpdated = false
+    }, [store.contactUpdated])
 
     return (
         <div className="container">

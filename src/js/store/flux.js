@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			contactBooks: [],
 			bookName: "",
 			inputValueToggle: false, 
+			contactUpdated: false, 
 			exampleContact: {
 				full_name: "Joe Bloggs",
 				email: "example@gmail.com",
@@ -21,7 +22,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			bookNameID: null,
 			userContactList: [],
-			currentContactId: ""
 			///////// DEMO STORE/STATE ////////////
 			// demo: [
 			// 	{
@@ -109,16 +109,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ userContactList: responseData });
 			},
 
-			setCurrentContactId: (id) => {
+			updateContact: async (name, address, phone, email, bookName, contactId) => {
+				console.log("what we get:", name, address, phone, email, bookName, contactId)
 				const store = getStore();
-				store.currentContactId = id;
-				console.log("currentContId", store.currentContactId)
-			}, 
-
-			updateContact: async (name, address, phone, email, bookName) => {
-				console.log("what we get:", name, address, phone, email, bookName)
-				const store = getStore();
-				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${store.currentContactId}`;
+				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${contactId}`;
 				
 				// fetch
 				try {
@@ -143,10 +137,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
+					setStore({contactUpdated: true})
 				} catch (error) {
 					console.error("Error:", error)
 				}
-				
 			},
 
 			deleteContact: async (id) => {
