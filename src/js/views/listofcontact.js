@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import "../../styles/index.css";
@@ -9,14 +9,29 @@ export const ListOfContact = () => {
     const { store, actions } = useContext(Context);
     const backUpId = id;
 
+    const [contactId, setContactId] = useState("")
+    const [contactFullName, setFullName] = useState("")
+    const [contactAddress, setAddress] = useState("")
+    const [contactPhone, setPhone] = useState("")
+    const [contactEmail, setEmail] = useState("")
+
     useEffect(() => {
         actions.openContactBook(backUpId);
     }, [])
 
+    useEffect(() => {
+        actions.setCurrentContactId(contactId);
+        actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, backUpId);
+    }, [contactId])
+    
+    console.log("id", contactId)
+
     /* TODO
         x Modal pops up on edit button click -> displays current info 
-        - Link those input to new useState variables (*value = onChange etc)
-        - Submit sends those values to a function in the store 
+        x Link those input to new useState variables (*value = onChange etc)
+        X Submit sends those values to a function in the store 
+            --> works, but do I need to setCurrentContactId or can just send it straight across as a param?
+            
         - Function in the store does a PUT request
         - Changes a toggle in store to true
         - UseEffect on this page: if true do a new fetch call 
@@ -74,31 +89,58 @@ export const ListOfContact = () => {
                                                     <h1 className="modal-title fs-5" id="exampleModalLabel">Edit Contact</h1>
                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form className="modal-body d-flex flex-column gap-2 align-items-center">
+                                                <form className="modal-body d-flex flex-column gap-2 align-items-start">
+                                                    <p>Below you see the current information for this contact.</p>
+                                                    <p>Please fill in <b>ALL</b> the fields, changing the information where desired.</p>
                                                     <div>
                                                         <label htmlFor="full_name" className='me-2'>Full Name</label>
-                                                         <br></br>
-                                                        <input id='full_name' value={item.full_name}/>
+                                                        <br></br>
+                                                        <input
+                                                            id='full_name'
+                                                            placeholder={item.full_name}
+                                                            value={contactFullName}
+                                                            onChange={e => setFullName(e.target.value)}
+                                                        />
                                                     </div>
                                                     <div>
                                                         <label htmlFor="address" className='me-2'>Address</label>
-                                                         <br></br>
-                                                        <input id='address' value={item.address}/>
+                                                        <br></br>
+                                                        <input
+                                                            id='address'
+                                                            placeholder={item.address}
+                                                            value={contactAddress}
+                                                            onChange={e => setAddress(e.target.value)}
+                                                        />
                                                     </div>
                                                     <div>
                                                         <label htmlFor="phone" className='me-2'>Phone</label>
-                                                         <br></br>
-                                                        <input id='phone' value={item.phone}/>
+                                                        <br></br>
+                                                        <input
+                                                            id='phone'
+                                                            placeholder={item.phone}
+                                                            value={contactPhone}
+                                                            onChange={e => setPhone(e.target.value)}
+                                                        />
                                                     </div>
                                                     <div>
                                                         <label htmlFor="email" className='me-2'>Email</label>
-                                                         <br></br>
-                                                        <input id='email' value={item.email}/>
+                                                        <br></br>
+                                                        <input
+                                                            id='email'
+                                                            placeholder={item.email}
+                                                            value={contactEmail}
+                                                            onChange={e => setEmail(e.target.value)}
+                                                        />
                                                     </div>
                                                 </form>
                                                 <div className="modal-footer">
                                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="button" className="btn btn-success" onClick={null} data-bs-dismiss="modal">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-success"
+                                                        onClick={() => setContactId(item.id)}
+                                                        data-bs-dismiss="modal"
+                                                    >
                                                         Submit
                                                     </button>
                                                 </div>

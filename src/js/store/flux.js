@@ -20,8 +20,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				phone: "",
 			},
 			bookNameID: null,
-			userContactList: []
-
+			userContactList: [],
+			currentContactId: ""
 			///////// DEMO STORE/STATE ////////////
 			// demo: [
 			// 	{
@@ -109,11 +109,51 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ userContactList: responseData });
 			},
 
+			setCurrentContactId: (id) => {
+				const store = getStore();
+				store.currentContactId = id;
+				console.log("currentContId", store.currentContactId)
+			}, 
+
+			updateContact: async (name, address, phone, email, bookName) => {
+				console.log("what we get:", name, address, phone, email, bookName)
+				const store = getStore();
+				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${store.currentContactId}`;
+				
+				// fetch
+				try {
+					const response = await fetch(fetchUrl, {
+						method: "PUT", 
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							full_name: name,
+							email: email,
+							agenda_slug: bookName,
+							address: address,
+							phone: phone,
+						})
+					})
+					console.log("response:", response)
+					// bad response
+					if (!response.ok) {
+						console.error(response.text)
+						throw new Error(response.statusText)
+					}
+					const responseData = await response.json();
+					console.log("responseData:", responseData)
+				} catch (error) {
+					console.error("Error:", error)
+				}
+				
+			},
+
 			deleteContact: async (id) => {
 				const actions = getActions();
-				// fetch
 				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${id}`;
 
+				// fetch
 				try {
 					const response = await fetch(fetchUrl, {
 						method: "DELETE",
