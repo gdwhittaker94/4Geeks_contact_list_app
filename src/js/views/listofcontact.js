@@ -7,7 +7,26 @@ import { Context } from '../store/appContext';
 export const ListOfContact = () => {
     const { id } = useParams();
     const { store, actions } = useContext(Context);
-    const backUpId = id;
+    const currentBookName = id;
+
+    // console.log("id:", id)
+
+    // Initial Page Fetch
+    useEffect(() => {
+        actions.openContactBook(currentBookName);
+    }, [])
+
+    /* 
+        HERE:
+        - Contacts appear on list of contacts page. 
+        - Now need to go through the other functions in this section's action
+        - Go through the rest of the code on this page, how i'm managing state and where etc
+    */
+
+
+
+
+
 
     const [contactId, setContactId] = useState("")
     const [contactFullName, setFullName] = useState("")
@@ -15,25 +34,39 @@ export const ListOfContact = () => {
     const [contactPhone, setPhone] = useState("")
     const [contactEmail, setEmail] = useState("")
 
+    const [editModalState, setEditModalState] = useState({})
+
+    const updateEditModalState = (individualId, Data) => {
+        setEditModalState({ ...editModalState, [individualId]: Data })
+    }
+
+    // console.log("modalState:", editModalState)
+
     /* TODO
+        - Add a new contact --> doesn't appear on list of contact page --> can't test new code for placeholder values
+
+        OLD
         - Placeholder values show first contact info, not the selected contact's info: fix/change/remove
-        - Contact ID numbers are showing for some reason 
         - Delete button deletes the contacts from top to bottom, doesn't delete the contact in question 
 
         * Errors must be to do with how I'm handling the list of contacts and in what order I'm manipulating them 
         ... Otherwise, I have all the desired functionality 
+
+        *useEffect linked to contactId + the problem? Plus, contactID variable = one, when there are many contacts.
+        Probably better to make an array of ids. 
     */
 
-    useEffect(() => {
-        actions.openContactBook(backUpId);
-    }, [])
+
+
+    // WORK TO DO HERE
+    // useEffect(() => {
+    //     actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, currentBookName, contactId);
+
+    //     // need to send across id of array to belongs to x contact -> comparison of ids (store id in other place?)
+    // }, [contactId])
 
     useEffect(() => {
-        actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, backUpId, contactId);
-    }, [contactId])
-
-    useEffect(() => {
-        store.contactUpdated === true ? actions.openContactBook(backUpId) : null
+        store.contactUpdated === true ? actions.openContactBook(currentBookName) : null
         store.contactUpdated = false
     }, [store.contactUpdated])
 
@@ -43,7 +76,7 @@ export const ListOfContact = () => {
             <div className="mb-3 d-flex justify-content-between">
                 <h1>{id}'s List of Contacts</h1>
                 <div>
-                    <Link to={`/addcontact/${id}`}>
+                    <Link to={`/addcontact/${currentBookName}`}>
                         <button >
                             Add a new contact
                         </button>
@@ -52,7 +85,7 @@ export const ListOfContact = () => {
             </div>
             {/* LIST */}
             <ul className="list-group">
-                {store.userContactList.map((item, index) => {
+                {store.contactsList.map((item, index) => {
                     return (
                         <div key={index}>
                             <div className='mt-3'>
@@ -71,12 +104,17 @@ export const ListOfContact = () => {
                                         {item.phone}
                                         <br></br>
                                         {item.email}
-                                        <br></br>
-                                        {item.id}
                                     </div>
                                 </div>
                                 <div>
-                                    <button type='button' data-bs-toggle='modal' data-bs-target='#editModal'>Edit</button>
+                                    <button
+                                        type='button'
+                                        data-bs-toggle='modal'
+                                        data-bs-target='#editModal'
+                                        onClick={() => updateEditModalState(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email })}
+                                    >
+                                        Edit
+                                    </button>
 
                                     {/* EDIT Modal  */}
                                     <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -88,15 +126,15 @@ export const ListOfContact = () => {
                                                 </div>
                                                 <form className="modal-body d-flex flex-column gap-2 align-items-start">
                                                     <p>Below you see the current information for this contact.</p>
-                                                    <p>Please fill in <b>ALL</b> the fields, changing the information where desired.</p>
+                                                    <p>Please edit the information you wish to change before submitting.</p>
                                                     <div>
                                                         <label htmlFor="full_name" className='me-2'>Full Name</label>
                                                         <br></br>
                                                         <input
                                                             id='full_name'
-                                                            placeholder={item.full_name}
-                                                            value={contactFullName}
-                                                            onChange={e => setFullName(e.target.value)}
+                                                            placeholder={editModalState[item.id]?.full_name || item.full_name}
+                                                            value={editModalState[item.id]?.full_name || ""}
+                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], full_name: e.target.value })}
                                                         />
                                                     </div>
                                                     <div>
@@ -104,9 +142,12 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='address'
-                                                            placeholder={item.address}
-                                                            value={contactAddress}
-                                                            onChange={e => setAddress(e.target.value)}
+                                                            placeholder={editModalState[item.id]?.address || item.address}
+                                                            value={editModalState[item.id]?.address || ""}
+                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], address: e.target.value })}
+                                                        // placeholder={item.address}
+                                                        // value={contactAddress}
+                                                        // onChange={e => setAddress(e.target.value)}
                                                         />
                                                     </div>
                                                     <div>
@@ -114,9 +155,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='phone'
-                                                            placeholder={item.phone}
-                                                            value={contactPhone}
-                                                            onChange={e => setPhone(e.target.value)}
+                                                            placeholder={editModalState[item.id]?.phone || item.phone}
+                                                            value={editModalState[item.id]?.phone || ""}
+                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], phone: e.target.value })}
                                                         />
                                                     </div>
                                                     <div>
@@ -124,9 +165,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='email'
-                                                            placeholder={item.email}
-                                                            value={contactEmail}
-                                                            onChange={e => setEmail(e.target.value)}
+                                                            placeholder={editModalState[item.id]?.email || item.email}
+                                                            value={editModalState[item.id]?.email || ""}
+                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], email: e.target.value })}
                                                         />
                                                     </div>
                                                 </form>
@@ -135,8 +176,17 @@ export const ListOfContact = () => {
                                                     <button
                                                         type="button"
                                                         className="btn btn-success"
-                                                        onClick={() => setContactId(item.id)}
                                                         data-bs-dismiss="modal"
+                                                        onClick={() => {
+                                                            actions.updateContact(
+                                                                editModalState[item.id]?.full_name || item.full_name,
+                                                                editModalState[item.id]?.address || item.address,
+                                                                editModalState[item.id]?.phone || item.phone,
+                                                                editModalState[item.id]?.email || item.email,
+                                                                currentBookName,
+                                                                item.id
+                                                            )
+                                                        }}
                                                     >
                                                         Submit
                                                     </button>

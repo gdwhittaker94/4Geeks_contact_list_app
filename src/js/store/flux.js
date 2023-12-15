@@ -1,18 +1,35 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			// --- MY STORE/STATE -----------------------------------
-			contactBooks: [],
-			bookName: "",
-			inputValueToggle: false,
-			userCreatedToggle: false,
-			contactUpdated: false,
+			// CONTACT BOOK LIST PAGE
+			allContactBooks: [],
+			newBookName: "",
 			exampleContact: {
 				full_name: "Joe Bloggs",
 				email: "example@gmail.com",
 				address: "123 Street",
 				phone: "123456789",
 			},
+			inputResetToggle: false,
+			currentBookName: null,
+
+			// LIST OF CONTACTS PAGE
+			contactsList: [],
+
+
+			// ADD CONTACT PAGE
+
+
+
+
+
+			// OLD
+			
+			
+			
+			userCreatedToggle: false,
+			contactUpdated: false,
+			
 			newContact: {
 				full_name: "",
 				email: "",
@@ -20,28 +37,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				address: "",
 				phone: "",
 			},
-			bookNameID: null,
-			userContactList: [],
+			
+			
 		},
 		actions: {
+
 			// --- CONTACT BOOKS LIST PAGE ---------------------------------
 
 			fetchContactBooks: async () => {
-				const fetchResponse = await fetch("https://playground.4geeks.com/apis/fake/contact/agenda/");
-				const listOfContactBooks = await fetchResponse.json();
-				setStore({ contactBooks: listOfContactBooks });
+				const response = await fetch("https://playground.4geeks.com/apis/fake/contact/agenda/");
+				const responseContactBookData = await response.json();
+				setStore({ allContactBooks: responseContactBookData });
 			},
 
-			setNewContactBook: (value) => {
+			submitNewContactBook: async (contactBookName) => {
 				const store = getStore();
-				store.newContactBook = value;
-			},
-
-			submitNewContactBook: async (inputValue) => {
-				const store = getStore();
-				const actions = getActions();
-				setStore({ bookName: inputValue });
-				// fetch
+				setStore({ newBookName: contactBookName }); // --> necessary for fetch body
+				
+				// fetch data
 				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/";
 				const fetchBody = {
 					method: "POST",
@@ -49,11 +62,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({
 						full_name: store.exampleContact.full_name,
 						email: store.exampleContact.email,
-						agenda_slug: store.bookName,
+						agenda_slug: store.newBookName,
 						address: store.exampleContact.address,
 						phone: store.exampleContact.phone,
 					})
 				};
+
+				// fetch
 				try {
 					const response = await fetch(fetchURL, fetchBody);
 					console.log("response:", response)
@@ -62,39 +77,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.error(response.text)
 						throw new Error(response.statusText)
 					}
+
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
-					actions.resetInputBox();
-					actions.fetchContactBooks();
+				
+					// Further Actions
+					setStore({ inputResetToggle: true });
+
 				} catch (error) {
 					console.error("Error:", error);
 				}
 			},
 
-			resetInputBox: () => {
+			// So that we have the book name when the user clicks a book without creating one first 
+			setCurrentBookName: (currentBookName) => {
 				const store = getStore();
-				setStore({ inputValueToggle: true });
-			},
+				setStore({ currentBookName: currentBookName });
 
-			setBookNameID: (ID) => {
-				const store = getStore();
-				setStore({ bookNameID: ID });
-				store.newContact.agenda_slug != "" ? setStore({ newContact: { agenda_slug: "" } }) : null;
-				setStore({
-					newContact: {
-						agenda_slug: ID
-					}
-				});
+
+				// DO I NEED TO DO THIS HERE STILL?
+				// store.newContact.agenda_slug != "" ? setStore({ newContact: { agenda_slug: "" } }) : null;
+				// setStore({
+				// 	newContact: {
+				// 		agenda_slug: ID
+				// 	}
+				// });
 			},
 
 			// --- LIST OF CONTACTS PAGE -----------------------------------
-			openContactBook: async (backUpId) => {
+
+			openContactBook: async (currentBookName) => {
 				const store = getStore();
-				store.bookNameID === null ? setStore({ bookNameID: backUpId }) : null;
-				const response = await fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${store.bookNameID}`);
-				const responseData = await response.json();
-				setStore({ userContactList: responseData });
+				// Handle Errors
+				store.currentBookName === null ? setStore({ currentBookName: currentBookName }) : null;
+				// Fetch
+				const responseContactsList = await fetch(`https://playground.4geeks.com/apis/fake/contact/agenda/${store.currentBookName}`);
+				// console.log("responseContactsList:", responseContactsList)
+				const responseContactListData = await responseContactsList.json();
+				// console.log("responseContactListData:", responseContactListData)
+
+				// Save data so can map it in List of Contacts Page
+				setStore({ contactsList: responseContactListData });
 			},
+
+			// HERE
 
 			updateContact: async (name, address, phone, email, bookName, contactId) => {
 				const store = getStore();
@@ -153,16 +179,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			// --- ADD NEW CONTACT PAGE ------------------------------------
+
 			createNewContact: async (name, address, phone, email) => {
 				const store = getStore();
 				const actions = getActions();
 
 				// console.log("what we get:", name, address, phone, email)
 				// console.log("bookName:", store.bookName); --> NO VALUE HERE!
-				// console.log("newContactAgendaSlug:", store.newContact.agenda_slug)
+				// console.log("newContactAgendaSlug:", store.newContact.agenda_slug) --> VALUE HERE
 
 				// console.log("pre-newCont object:", store.newContact)
-
 				setStore({
 					newContact: {
 						...store.newContact,
@@ -172,7 +198,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						phone: phone,
 					}
 				})
-
 				// console.log("post-newCont object:", store.newContact)
 
 				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/";
@@ -209,26 +234,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// DELETE BELOW
 
-
-			setNewContactInput: (value, inputName) => {
-				const store = getStore();
-				if (inputName === "name") {
-					store.newContact.full_name = value;
-				}
-				if (inputName === "address") {
-					store.newContact.address = value;
-				}
-				if (inputName === "phone") {
-					store.newContact.phone = value;
-				}
-				if (inputName === "email") {
-					store.newContact.email = value;
-				}
-				console.log(store.newContact.full_name)
-			},
-			submitNewContactInput: async () => {
-
-			},
+			// setNewContactInput: (value, inputName) => {
+			// 	const store = getStore();
+			// 	if (inputName === "name") {
+			// 		store.newContact.full_name = value;
+			// 	}
+			// 	if (inputName === "address") {
+			// 		store.newContact.address = value;
+			// 	}
+			// 	if (inputName === "phone") {
+			// 		store.newContact.phone = value;
+			// 	}
+			// 	if (inputName === "email") {
+			// 		store.newContact.email = value;
+			// 	}
+			// 	console.log(store.newContact.full_name)
+			// },
 		}
 	};
 };

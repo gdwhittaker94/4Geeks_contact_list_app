@@ -21,10 +21,7 @@ const injectContext = PassedComponent => {
 			})
 		);
 
-		useEffect(() => {
-			state.actions.fetchContactBooks();
-
-			
+		useEffect(() => {			
 			/**
 			 * EDIT THIS!
 			 * Equivalent to "window.onLoad", executes only once ([]).

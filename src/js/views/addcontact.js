@@ -19,6 +19,8 @@ export const AddContact = () => {
         actions.createNewContact(fullName, address, phone, email)
     }
 
+    console.log(fullName, address, phone, email)
+    
     useEffect(() => {
         store.userCreatedToggle === true? navigate(`/listofcontact/${id}`) : null;
         store.userCreatedToggle = false;

@@ -5,26 +5,32 @@ import "../../styles/index.css";
 
 export const ContactBookList = () => {
     const { store, actions } = useContext(Context);
-    const [inputValue, setInputValue] = useState("");
+    const [contactBookName, setcontactBookName] = useState("");
 
+    // Fetch All Contact Books
     useEffect(() => {
-        store.inputValueToggle === true? setInputValue("") : null
-        store.inputValueToggle = false
-    }, [store.inputValueToggle])
+        actions.fetchContactBooks();
+    })
 
+    // Book Name Input Box Reset
+    useEffect(() => {
+        store.inputResetToggle === true? setcontactBookName("") : null
+        store.inputResetToggle = false
+    }, [store.inputResetToggle])
 
     return (
         <div className="container">
             <div className="my-3">
                 <input
                     placeholder="Create new contacts book"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    value={contactBookName}
+                    onChange={(e) => setcontactBookName(e.target.value)}
                 />
-                {inputValue === "" ?
+                {/* Conditional: what appears after input box */}
+                {contactBookName === "" ?
                     <p>Type something to enter</p>
                     :
-                    <button onClick={() => actions.submitNewContactBook(inputValue)}>
+                    <button onClick={() => actions.submitNewContactBook(contactBookName)}>
                         Create
                     </button>
                 }
@@ -32,12 +38,12 @@ export const ContactBookList = () => {
             </div>
             {/* Agendas List */}
             <ul className="list-group">
-                {store.contactBooks.map((item, index) => {
+                {store.allContactBooks.map((item, index) => {
                     return (
                         <li key={index}>
                             <div>
                                 <span>Agenda #{index + 1}:
-                                    <Link to={`/listofcontact/${item}`} onClick={() => { actions.setBookNameID(item) }}>
+                                    <Link to={`/listofcontact/${item}`} onClick={() => { actions.setCurrentBookName(item) }}>
                                         {item}
                                     </Link>
                                 </span>
