@@ -15,6 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// LIST OF CONTACTS PAGE
 			contactsList: [],
+			contactDeleted: false, 
 
 
 			// ADD CONTACT PAGE
@@ -118,12 +119,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				// Save data so can map it in List of Contacts Page
 				setStore({ contactsList: responseContactListData });
+				console.log("contactsList:", store.contactsList)
 			},
 
-			// HERE
-
 			updateContact: async (name, address, phone, email, bookName, contactId) => {
-				const store = getStore();
 				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${contactId}`;
 
 				// fetch
@@ -142,20 +141,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 						})
 					})
 					console.log("response:", response)
-					// bad response
 					if (!response.ok) {
 						console.error(response.text)
 						throw new Error(response.statusText)
 					}
+
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
 					setStore({ contactUpdated: true })
+
 				} catch (error) {
 					console.error("Error:", error)
 				}
 			},
 
 			deleteContact: async (id) => {
+				console.log("id flux:", id)
 				const actions = getActions();
 				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${id}`;
 
@@ -171,8 +172,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("response:", response)
 					const responseData = await response.json()
 					console.log("responseData:", responseData)
-					// Refresh contacts on page
-					actions.openContactBook()
+
+					// Further Actions
+					setStore({ contactDeleted: true });
 				} catch (error) {
 					console.error("Error:", error);
 				}

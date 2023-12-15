@@ -5,78 +5,85 @@ import "../../styles/index.css";
 import { Context } from '../store/appContext';
 
 export const ListOfContact = () => {
+
+      /* NEW PLAN
+        - contactsList in store is the only place where the contactsList stays true and is reliable
+        - so make a normal variable that is a copy of that 
+
+        const contactsListCopy = store.contactsList
+        const workingContactsList = contactsListCopy
+        (console.log("copy:", contactsListCopy))
+        (console.log("workingCopy:", workingContactsList))
+
+        Will this do it?
+
+        - Then, in the modals, refence to the properties of the contact within the relevant index 
+
+        placeholder={workingContactsList[index].full_name)   
+        value={workingContactsList[index].full_name}
+        onChange={e => changeWorkingContactsList(e.target.value)}
+
+        function changeWorkingContactsList(currentInput) {
+            ...??
+        }
+
+        PROBLEMAS: 
+        - Gestion del estado
+        - Puedo actualizar los contactos pero luego cambian de orden
+        - Los placeholders y valores actuales de cada contacto no aparecen como deberian (salvo en el primero)
+        - El delete button borra el primer contacto en la lista, no el contacto desedado 
+        - Cuando anado un nuevo contacto no se anade a la lista de contactos
+        - si refresco la pagina, pierdo el nombre de la agenda 
+
+    */
+
     const { id } = useParams();
     const { store, actions } = useContext(Context);
-    const currentBookName = id;
+    const currentBookName = store.currentBookName;
 
-    // console.log("id:", id)
-
-    // Initial Page Fetch
+    // GET
     useEffect(() => {
         actions.openContactBook(currentBookName);
     }, [])
 
-    /* 
-        HERE:
-        - Contacts appear on list of contacts page. 
-        - Now need to go through the other functions in this section's action
-        - Go through the rest of the code on this page, how i'm managing state and where etc
-    */
 
+    // UPDATE 
+    const [individualContactInfo, setIndividualContactInfo] = useState({}) // object of properties with contact id as keys
 
-
-
-
-
-    const [contactId, setContactId] = useState("")
-    const [contactFullName, setFullName] = useState("")
-    const [contactAddress, setAddress] = useState("")
-    const [contactPhone, setPhone] = useState("")
-    const [contactEmail, setEmail] = useState("")
-
-    const [editModalState, setEditModalState] = useState({})
-
-    const updateEditModalState = (individualId, Data) => {
-        setEditModalState({ ...editModalState, [individualId]: Data })
+    // Set Data Inside Above State Variable for Edit Button
+    const updateIndContactInfo = (individualId, individualData) => {
+        setIndividualContactInfo({ ...individualContactInfo, [individualId]: individualData })
     }
 
-    // console.log("modalState:", editModalState)
+    console.log("individualContInfo_state:", individualContactInfo)
 
-    /* TODO
-        - Add a new contact --> doesn't appear on list of contact page --> can't test new code for placeholder values
-
-        OLD
-        - Placeholder values show first contact info, not the selected contact's info: fix/change/remove
-        - Delete button deletes the contacts from top to bottom, doesn't delete the contact in question 
-
-        * Errors must be to do with how I'm handling the list of contacts and in what order I'm manipulating them 
-        ... Otherwise, I have all the desired functionality 
-
-        *useEffect linked to contactId + the problem? Plus, contactID variable = one, when there are many contacts.
-        Probably better to make an array of ids. 
-    */
-
-
-
-    // WORK TO DO HERE
-    // useEffect(() => {
-    //     actions.updateContact(contactFullName, contactAddress, contactPhone, contactEmail, currentBookName, contactId);
-
-    //     // need to send across id of array to belongs to x contact -> comparison of ids (store id in other place?)
-    // }, [contactId])
-
+    // New fetch after a contact updated
     useEffect(() => {
         store.contactUpdated === true ? actions.openContactBook(currentBookName) : null
         store.contactUpdated = false
     }, [store.contactUpdated])
 
+    // DELETE
+    function deleteIndContact(indID) {
+        console.log("delete function:", indID)
+        actions.deleteContact(indID)
+    }
+
+    useEffect(() => {
+        store.contactDeleted === true ? actions.openContactBook(currentBookName) : null
+        store.contactDeleted = false
+    }, [store.contactDeleted])
+
+
+
+
     return (
         <div className="container">
             {/* HEADER */}
             <div className="mb-3 d-flex justify-content-between">
-                <h1>{id}'s List of Contacts</h1>
+                <h1>{currentBookName}'s List of Contacts</h1>
                 <div>
-                    <Link to={`/addcontact/${currentBookName}`}>
+                    <Link to={`/addcontact`}>
                         <button >
                             Add a new contact
                         </button>
@@ -107,11 +114,15 @@ export const ListOfContact = () => {
                                     </div>
                                 </div>
                                 <div>
+                                    {/* EDIT */}
                                     <button
                                         type='button'
                                         data-bs-toggle='modal'
                                         data-bs-target='#editModal'
-                                        onClick={() => updateEditModalState(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email })}
+                                        onClick={() => individualContactInfo[item.id] ?
+                                            null
+                                            :
+                                            updateIndContactInfo(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
                                     >
                                         Edit
                                     </button>
@@ -132,9 +143,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='full_name'
-                                                            placeholder={editModalState[item.id]?.full_name || item.full_name}
-                                                            value={editModalState[item.id]?.full_name || ""}
-                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], full_name: e.target.value })}
+                                                            placeholder={individualContactInfo[item.id]?.full_name || ""}
+                                                            value={individualContactInfo[item.id]?.full_name || ""}
+                                                            onChange={e => setIndividualContactInfo({ ...individualContactInfo, [item.id]: { ...individualContactInfo[item.id], full_name: e.target.value } })}
                                                         />
                                                     </div>
                                                     <div>
@@ -142,12 +153,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='address'
-                                                            placeholder={editModalState[item.id]?.address || item.address}
-                                                            value={editModalState[item.id]?.address || ""}
-                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], address: e.target.value })}
-                                                        // placeholder={item.address}
-                                                        // value={contactAddress}
-                                                        // onChange={e => setAddress(e.target.value)}
+                                                            placeholder={individualContactInfo[item.id]?.address || ""}
+                                                            value={individualContactInfo[item.id]?.address || ""}
+                                                            onChange={e => setIndividualContactInfo({ ...individualContactInfo, [item.id]: { ...individualContactInfo[item.id], address: e.target.value } })}
                                                         />
                                                     </div>
                                                     <div>
@@ -155,9 +163,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='phone'
-                                                            placeholder={editModalState[item.id]?.phone || item.phone}
-                                                            value={editModalState[item.id]?.phone || ""}
-                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], phone: e.target.value })}
+                                                            placeholder={individualContactInfo[item.id]?.phone || ""}
+                                                            value={individualContactInfo[item.id]?.phone || ""}
+                                                            onChange={e => setIndividualContactInfo({ ...individualContactInfo, [item.id]: { ...individualContactInfo[item.id], phone: e.target.value } })}
                                                         />
                                                     </div>
                                                     <div>
@@ -165,9 +173,9 @@ export const ListOfContact = () => {
                                                         <br></br>
                                                         <input
                                                             id='email'
-                                                            placeholder={editModalState[item.id]?.email || item.email}
-                                                            value={editModalState[item.id]?.email || ""}
-                                                            onChange={e => updateEditModalState(item.id, { ...editModalState[item.id], email: e.target.value })}
+                                                            placeholder={individualContactInfo[item.id]?.email || ""}
+                                                            value={individualContactInfo[item.id]?.email || ""}
+                                                            onChange={e => setIndividualContactInfo({ ...individualContactInfo, [item.id]: { ...individualContactInfo[item.id], email: e.target.value } })}
                                                         />
                                                     </div>
                                                 </form>
@@ -179,12 +187,12 @@ export const ListOfContact = () => {
                                                         data-bs-dismiss="modal"
                                                         onClick={() => {
                                                             actions.updateContact(
-                                                                editModalState[item.id]?.full_name || item.full_name,
-                                                                editModalState[item.id]?.address || item.address,
-                                                                editModalState[item.id]?.phone || item.phone,
-                                                                editModalState[item.id]?.email || item.email,
-                                                                currentBookName,
-                                                                item.id
+                                                                individualContactInfo[item.id]?.full_name || item.full_name,
+                                                                individualContactInfo[item.id]?.address || item.address,
+                                                                individualContactInfo[item.id]?.phone || item.phone,
+                                                                individualContactInfo[item.id]?.email || item.email,
+                                                                individualContactInfo[item.id]?.agenda_slug || item.agenda_slug,
+                                                                individualContactInfo[item.id]?.id || item.id,
                                                             )
                                                         }}
                                                     >
@@ -195,9 +203,20 @@ export const ListOfContact = () => {
                                         </div>
                                     </div>
 
-                                    <button type='button' data-bs-toggle='modal' data-bs-target='#checkModal'>Bin</button>
+                                    {/* DELETE */}
+                                    <button
+                                        type='button'
+                                        data-bs-toggle='modal'
+                                        data-bs-target='#checkModal'
+                                        onClick={() => individualContactInfo[item.id] ?
+                                            null
+                                            :
+                                            updateIndContactInfo(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
+                                    >
+                                        Delete
+                                    </button>
 
-                                    {/* DELETE Modal  */}
+                                    {/* DELETE MODAL */}
                                     <div className="modal fade" id="checkModal" tabIndex="-1" aria-labelledby="checkModalLabel" aria-hidden="true">
                                         <div className="modal-dialog modal-dialog-centered">
                                             <div className="modal-content">
@@ -209,8 +228,18 @@ export const ListOfContact = () => {
                                                     Are you sure?
                                                 </div>
                                                 <div className="modal-footer">
-                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="button" className="btn btn-danger" onClick={() => { actions.deleteContact(item.id); }} data-bs-dismiss="modal">
+                                                    <button type="button"
+                                                        className="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-danger"
+                                                        data-bs-dismiss="modal"
+                                                        onClick={() => deleteIndContact(item.id)}
+                                                    >
                                                         Yes, delete
                                                     </button>
                                                 </div>
@@ -224,7 +253,7 @@ export const ListOfContact = () => {
                     );
                 })}
             </ul>
-            {/* RETURN LINK  */}
+            {/* HOME LINK  */}
             <div className="mt-3 text-center">
                 <Link to="/" >Home</Link>
             </div>

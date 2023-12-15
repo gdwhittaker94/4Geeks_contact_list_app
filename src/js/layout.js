@@ -17,7 +17,7 @@ const Layout = () => {
 					<Routes>
 						<Route path="/" element={<ContactBookList/>}/>
 						<Route path="/listofcontact/:id" element={<ListOfContact/>}/>	
-						<Route path="/addcontact/:id" element={<AddContact/>}/>	
+						<Route path="/addcontact" element={<AddContact/>}/>	
 						<Route path="*" element={<h1>Page Not found!</h1>} />
 					</Routes>
 			</BrowserRouter>

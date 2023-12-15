@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 import "../../styles/index.css";
@@ -8,7 +7,6 @@ import "../../styles/index.css";
 export const AddContact = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    const { id } = useParams();
 
     const [fullName, setFullName] = useState("")
     const [address, setAddress] = useState("")
@@ -18,6 +16,8 @@ export const AddContact = () => {
     function newContactStart() {
         actions.createNewContact(fullName, address, phone, email)
     }
+
+    // Have removed param from url --> get book name from currentBookName var in store 
 
     console.log(fullName, address, phone, email)
     
