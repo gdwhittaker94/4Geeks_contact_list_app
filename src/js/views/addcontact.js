@@ -12,19 +12,16 @@ export const AddContact = () => {
     const [address, setAddress] = useState("")
     const [phone, setPhone] = useState("")
     const [email, setEmail] = useState("")
+    const storedBookName = store.currentBookName;
 
     function newContactStart() {
-        actions.createNewContact(fullName, address, phone, email)
+        actions.createNewContact(fullName, address, phone, email, storedBookName)
     }
 
-    // Have removed param from url --> get book name from currentBookName var in store 
-
-    console.log(fullName, address, phone, email)
-    
     useEffect(() => {
-        store.userCreatedToggle === true? navigate(`/listofcontact/${id}`) : null;
-        store.userCreatedToggle = false;
-    }, [store.userCreatedToggle])
+        store.userCreated === true? navigate(`/listofcontact/${storedBookName}`) : null;
+        store.userCreated = false;
+    }, [store.userCreated])
 
     return (
         <>
@@ -78,7 +75,7 @@ export const AddContact = () => {
                     />
                     <input type="submit" value="Submit" />
                 </form>
-                <Link to={`/listofcontact/${store.userID}`}>
+                <Link to={`/listofcontact/${storedBookName}`}>
                     View all Contacts
                 </Link>
             </div>

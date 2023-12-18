@@ -3,7 +3,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			// CONTACT BOOK LIST PAGE
 			allContactBooks: [],
-			newBookName: "",
 			exampleContact: {
 				full_name: "Joe Bloggs",
 				email: "example@gmail.com",
@@ -15,22 +14,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// LIST OF CONTACTS PAGE
 			contactsList: [],
+			contactUpdated: false,
 			contactDeleted: false, 
-
+			allContactsDeleted: false, 
 
 			// ADD CONTACT PAGE
-
-
-			// OLD
-			userCreatedToggle: false,
-			contactUpdated: false,
-			newContact: {
-				full_name: "",
-				email: "",
-				agenda_slug: "",
-				address: "",
-				phone: "",
-			},
+			userCreated: false,
 		},
 		actions: {
 
@@ -44,7 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			submitNewContactBook: async (contactBookName) => {
 				const store = getStore();
-				setStore({ newBookName: contactBookName }); // --> necessary for fetch body
+				const newBookName = contactBookName; // --> necessary for fetch body
 				
 				// fetch data
 				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/";
@@ -54,7 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({
 						full_name: store.exampleContact.full_name,
 						email: store.exampleContact.email,
-						agenda_slug: store.newBookName,
+						agenda_slug: newBookName,
 						address: store.exampleContact.address,
 						phone: store.exampleContact.phone,
 					})
@@ -63,15 +52,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// fetch
 				try {
 					const response = await fetch(fetchURL, fetchBody);
-					console.log("response:", response)
+					// console.log("response:", response)
 					// bad response
 					if (!response.ok) {
 						console.error(response.text)
 						throw new Error(response.statusText)
 					}
-
 					const responseData = await response.json();
-					console.log("responseData:", responseData)
+					// console.log("responseData:", responseData)
 				
 					// Further Actions
 					setStore({ inputResetToggle: true });
@@ -85,15 +73,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setCurrentBookName: (currentBookName) => {
 				const store = getStore();
 				setStore({ currentBookName: currentBookName });
-
-
-				// DO I NEED TO DO THIS HERE STILL?
-				// store.newContact.agenda_slug != "" ? setStore({ newContact: { agenda_slug: "" } }) : null;
-				// setStore({
-				// 	newContact: {
-				// 		agenda_slug: ID
-				// 	}
-				// });
 			},
 
 			// --- LIST OF CONTACTS PAGE -----------------------------------
@@ -131,14 +110,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 							phone: phone,
 						})
 					})
-					console.log("response:", response)
+					// console.log("response:", response)
 					if (!response.ok) {
 						console.error(response.text)
 						throw new Error(response.statusText)
 					}
-
 					const responseData = await response.json();
-					console.log("responseData:", responseData)
+					// console.log("responseData:", responseData)
+
+					// further actions
 					setStore({ contactUpdated: true })
 
 				} catch (error) {
@@ -148,7 +128,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteContact: async (id) => {
 				console.log("id flux:", id)
-				const actions = getActions();
 				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/${id}`;
 
 				// fetch
@@ -160,9 +139,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.error("Error:", response.status)
 						throw new Error(response.statusText)
 					}
-					console.log("response:", response)
+					// console.log("response:", response)
 					const responseData = await response.json()
-					console.log("responseData:", responseData)
+					// console.log("responseData:", responseData)
 
 					// Further Actions
 					setStore({ contactDeleted: true });
@@ -171,30 +150,46 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			deleteAllContacts: async (bookName) => {
+				const actions = getActions()
+				console.log("bookName:", bookName)
+				const fetchUrl = `https://playground.4geeks.com/apis/fake/contact/agenda/${bookName}`;
+
+				// fetch
+				try {
+					const response = await fetch(fetchUrl, {
+						method: "DELETE",
+					})
+					if (!response.ok) {
+						console.error("Error:", response.status)
+						throw new Error(response.statusText)
+					}
+					console.log("response:", response)
+				
+					// Further Actions
+					setStore({ allContactsDeleted: true });
+				} catch (error) {
+					console.error("Error:", error);
+				}
+			},
+
+
 			// --- ADD NEW CONTACT PAGE ------------------------------------
 
-			createNewContact: async (name, address, phone, email) => {
-				const store = getStore();
-				const actions = getActions();
+			createNewContact: async (name, address, phone, email, bookName) => {
+				// console.log("what we get:", name, address, phone, email, bookName)
 
-				// console.log("what we get:", name, address, phone, email)
-				// console.log("bookName:", store.bookName); --> NO VALUE HERE!
-				// console.log("newContactAgendaSlug:", store.newContact.agenda_slug) --> VALUE HERE
-
-				// console.log("pre-newCont object:", store.newContact)
-				setStore({
-					newContact: {
-						...store.newContact,
-						full_name: name,
-						email: email,
-						address: address,
-						phone: phone,
-					}
-				})
-				// console.log("post-newCont object:", store.newContact)
+				const newContact = {
+					full_name: name, 
+					address: address, 
+					phone: phone, 
+					email: email, 
+					agenda_slug: bookName
+				}
+				console.log("newCont object:", newContact)
 
 				const fetchURL = "https://playground.4geeks.com/apis/fake/contact/";
-				const fetchBody = store.newContact;
+				const fetchBody = newContact;
 
 				// fetch
 				try {
@@ -211,38 +206,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("response:", response)
 					const responseData = await response.json();
 					console.log("responseData:", responseData)
-					actions.updateContactsList();
+					
+					// further actions
+					setStore({userCreated: true});
+					// console.log("toggle:", store.userCreated)
+
 				} catch (error) {
 					console.error("Error:", error);
 				}
 			},
-			updateContactsList: () => {
-				const store = getStore();
-				// console.log("pre-updatedContacts:", store.userContactList)
-				setStore({ userContactList: [...store.userContactList, store.newContact] });
-				// console.log("post-updatedContacts:", store.userContactList)
-				setStore(store.userCreatedToggle = true);
-				// console.log("toggle:", store.userCreatedToggle)
-			},
-
-			// DELETE BELOW
-
-			// setNewContactInput: (value, inputName) => {
-			// 	const store = getStore();
-			// 	if (inputName === "name") {
-			// 		store.newContact.full_name = value;
-			// 	}
-			// 	if (inputName === "address") {
-			// 		store.newContact.address = value;
-			// 	}
-			// 	if (inputName === "phone") {
-			// 		store.newContact.phone = value;
-			// 	}
-			// 	if (inputName === "email") {
-			// 		store.newContact.email = value;
-			// 	}
-			// 	console.log(store.newContact.full_name)
-			// },
 		}
 	};
 };
