@@ -27,6 +27,8 @@ export const ListOfContact = () => {
             ...??
         }
 
+        ------------------------------
+
         PROBLEMAS: 
         - Gestion del estado
         - Puedo actualizar los contactos pero luego cambian de orden
@@ -35,7 +37,7 @@ export const ListOfContact = () => {
         - Cuando anado un nuevo contacto no se anade a la lista de contactos
         - si refresco la pagina, pierdo el nombre de la agenda 
 
-    */
+    *///////////////////////////////////////////////////
 
     const { id } = useParams();
     const { store, actions } = useContext(Context);
@@ -52,8 +54,13 @@ export const ListOfContact = () => {
 
     // Set Data Inside Above State Variable for Edit Button
     const updateIndContactInfo = (individualId, individualData) => {
-        setIndividualContactInfo({ ...individualContactInfo, [individualId]: individualData })
+        setIndividualContactInfo(individualData)
     }
+
+    /* ONLY THE DETAILS OF THE CONTACT IN THE VARIABLE
+        ID NOT PASSING DOWN CORRECTLY - NOT SURE WHY, SO BYPASS IT AND DONT USE ID AS REF. VALUE
+        SEE HOW JOSE CHANGED FULL NAME FIELD OF EDIT MODAL
+    */
 
     console.log("individualContInfo_state:", individualContactInfo)
 
@@ -73,8 +80,6 @@ export const ListOfContact = () => {
         store.contactDeleted === true ? actions.openContactBook(currentBookName) : null
         store.contactDeleted = false
     }, [store.contactDeleted])
-
-
 
 
     return (
@@ -112,6 +117,7 @@ export const ListOfContact = () => {
                                         <br></br>
                                         {item.email}
                                     </div>
+                                    <p>{item.id}</p>
                                 </div>
                                 <div>
                                     {/* EDIT */}
@@ -119,10 +125,7 @@ export const ListOfContact = () => {
                                         type='button'
                                         data-bs-toggle='modal'
                                         data-bs-target='#editModal'
-                                        onClick={() => individualContactInfo[item.id] ?
-                                            null
-                                            :
-                                            updateIndContactInfo(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
+                                        onClick={() => updateIndContactInfo(item.id, { full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
                                     >
                                         Edit
                                     </button>
@@ -139,12 +142,13 @@ export const ListOfContact = () => {
                                                     <p>Below you see the current information for this contact.</p>
                                                     <p>Please edit the information you wish to change before submitting.</p>
                                                     <div>
+                                                        <p>{item.id}</p>
                                                         <label htmlFor="full_name" className='me-2'>Full Name</label>
                                                         <br></br>
                                                         <input
                                                             id='full_name'
                                                             placeholder={individualContactInfo[item.id]?.full_name || ""}
-                                                            value={individualContactInfo[item.id]?.full_name || ""}
+                                                            value={individualContactInfo.full_name || ""}
                                                             onChange={e => setIndividualContactInfo({ ...individualContactInfo, [item.id]: { ...individualContactInfo[item.id], full_name: e.target.value } })}
                                                         />
                                                     </div>
@@ -227,6 +231,7 @@ export const ListOfContact = () => {
                                                 <div className="modal-body">
                                                     Are you sure?
                                                 </div>
+                                                <p>{item.id}</p>
                                                 <div className="modal-footer">
                                                     <button type="button"
                                                         className="btn btn-secondary"

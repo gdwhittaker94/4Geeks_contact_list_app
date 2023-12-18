@@ -21,16 +21,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// ADD CONTACT PAGE
 
 
-
-
-
 			// OLD
-			
-			
-			
 			userCreatedToggle: false,
 			contactUpdated: false,
-			
 			newContact: {
 				full_name: "",
 				email: "",
@@ -38,8 +31,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				address: "",
 				phone: "",
 			},
-			
-			
 		},
 		actions: {
 
