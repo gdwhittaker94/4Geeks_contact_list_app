@@ -1,19 +1,56 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 
 :root {
-    --caveat: 'Caveat', cursive;
+    --caveat: 'Caveat', cursive; /* 400, 500, 600, 700 */
+    --roboto: 'Roboto', sans-serif; /* 400, 500, 700, 900 */
+
+}
+
+body {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1015%26quot%3b)' fill='none'%3e%3crect width='1440' height='560' x='0' y='0' fill='rgba(81%2c 46%2c 95%2c 1)'%3e%3c/rect%3e%3cpath d='M0%2c383.908C74.604%2c383.356%2c148.071%2c368.21%2c212.862%2c331.22C279.997%2c292.892%2c333.944%2c236.977%2c373.599%2c170.617C416.731%2c98.438%2c457.688%2c19.06%2c449.399%2c-64.614C440.979%2c-149.615%2c387.831%2c-223.198%2c328.501%2c-284.648C271.303%2c-343.89%2c201.081%2c-396.421%2c119.347%2c-406.459C41.99%2c-415.959%2c-26.738%2c-366.358%2c-98.995%2c-337.147C-163.698%2c-310.99%2c-225.275%2c-285.07%2c-281.886%2c-244.255C-353.53%2c-192.601%2c-442.958%2c-151.189%2c-472.411%2c-67.922C-503.107%2c18.859%2c-488.863%2c123.065%2c-439.238%2c200.593C-391.328%2c275.442%2c-296.91%2c300.158%2c-214.897%2c334.386C-145.656%2c363.283%2c-75.027%2c384.463%2c0%2c383.908' fill='%23351e3e'%3e%3c/path%3e%3cpath d='M1440 1106.0230000000001C1548.65 1097.771 1655.076 1093.2179999999998 1755.493 1050.917 1871.423 1002.081 2015.915 961.104 2061.937 844.029 2108.1059999999998 726.581 2028.466 598.583 1978.934 482.51300000000003 1939.476 390.05 1867.5059999999999 322.418 1805.556 243.24400000000003 1739.7269999999999 159.113 1702.516 43.166000000000054 1603.6 2.8279999999999745 1502.723-38.309999999999945 1383.231-15.491999999999962 1284.614 30.803999999999974 1192.71 73.94900000000001 1144.405 169.59500000000003 1080.434 248.43400000000003 1018.764 324.437 929.879 387.774 916.311 484.705 902.754 581.557 982.471 662.653 1009.288 756.7 1042.353 872.659 998.476 1025.345 1092.128 1101.3 1184.058 1175.859 1321.975 1114.987 1440 1106.0230000000001' fill='%236d3e80'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1015'%3e%3crect width='1440' height='560' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: cover;
+    animation: backgroundMovement 30000ms ease-in-out infinite;
+}
+
+@keyframes backgroundMovement {
+    0% {
+        background-position: 60% 0%;
+    }
+    50% {
+        background-position: 40% 0%;
+
+    }
+    100% { 
+        background-position: 60% 0%;
+    }
 }
 
 /* CONTACT BOOK LIST */
+.header {
+    display: flex;
+    background: white;
+    width: fit-content;
+    margin-block: 20px;
+    border-radius: 10px;
+    align-items: center;
+    margin-inline: auto;
+    padding: 20px;
+}
 
-div:has(show) {
-    display: none; 
+.header p {
+    margin-bottom: 0px;
+    margin-right: 10px;
+    font-family: var(--roboto);
+    font-weight: 500;
+    font-size: 1.2em;
 }
 
 .contactBookInput::placeholder {
-    color: green;
+    color: purple;
     font-style: italic;
-    padding-inline-start: 17.5px;
+    padding-inline-start: 5px;
 }
 
 .contactBookList {
@@ -26,33 +63,36 @@ div:has(show) {
     margin-bottom: 40px;
 }
 
-.bookListItem {
+.contactBookList__item {
     text-align: center;
     font-family: var(--caveat);
-    background-color: #ab5151;
+    background-color: #FBAB7E;
+    background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    box-shadow: 2px 1px 0px 0px #6d6b6b;
+    box-shadow: 2px 1px 0px 0px black;
     position: relative;
 }
 
-.bookListItem:before {
+.contactBookList__binder {
+    content: '';
     position: absolute;
-    content: "";
-    
-    height: 12px;
-    width: 13px;
     left: -6px;
-    border-radius: 10px;
-    background-image: linear-gradient(359deg, gray, #dcd8d8, gray);
-
-    /* background-image: radial-gradient(circle at 5% 40%, transparent 50%, #555 20%); */
+    height: 93%;
+    width: 13px;
 }
 
-.bookListItem__button {
+.contactBookList__ring {
+    background-image: linear-gradient(359deg, gray, #dcd8d8, gray);
+    height: 5px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+}
+
+.contactBookList__button {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
@@ -65,3 +105,11 @@ div:has(show) {
 
 
 /* ADD CONTACT */
+
+
+@media screen and (max-width: 575px) {
+    
+    .header p {
+        margin-bottom: 10px;
+    }
+}
