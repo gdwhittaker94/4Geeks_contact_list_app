@@ -14,21 +14,22 @@ export const ContactBookList = () => {
 
     // Book Name Input Box Reset
     useEffect(() => {
-        store.inputResetToggle === true? setcontactBookName("") : null
+        store.inputResetToggle === true ? setcontactBookName("") : null
         store.inputResetToggle = false
     }, [store.inputResetToggle])
 
     return (
-        <div className="container">
-            <div className="my-3">
+        <div className="container pb-4">
+            <div className="my-3 text-center d-flex flex-column align-items-center">
                 <input
-                    placeholder="Create new contacts book"
+                    placeholder="Type something to create"
                     value={contactBookName}
                     onChange={(e) => setcontactBookName(e.target.value)}
+                    className="contactBookInput mb-2"
                 />
                 {/* Conditional: what appears after input box */}
                 {contactBookName === "" ?
-                    <p>Type something to enter</p>
+                    <p>Create a new contacts book</p>
                     :
                     <button onClick={() => actions.submitNewContactBook(contactBookName)}>
                         Create
@@ -37,17 +38,14 @@ export const ContactBookList = () => {
 
             </div>
             {/* Agendas List */}
-            <ul className="list-group">
+            <ul className="contactBookList">
                 {store.allContactBooks.map((item, index) => {
                     return (
-                        <li key={index}>
-                            <div>
-                                <span>Agenda #{index + 1}:
-                                    <Link to={`/listofcontact/${item}`} onClick={() => { actions.setCurrentBookName(item) }}>
-                                        {item}
-                                    </Link>
-                                </span>
-                            </div>
+                        <li key={index} className="bookListItem">
+                            <h2>{item}'s <br/> Contact Book</h2>
+                            <Link to={`/listofcontact/${item}`} onClick={() => { actions.setCurrentBookName(item) }}>
+                                <button className="bookListItem__button">Enter</button>
+                            </Link>
                         </li>
                     )
                 })}

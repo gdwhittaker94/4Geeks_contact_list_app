@@ -3,6 +3,8 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import "../../styles/index.css";
 import { Context } from '../store/appContext';
+import dog from '../../img/dog.jpg';
+
 
 export const ListOfContact = () => {
 
@@ -76,10 +78,10 @@ export const ListOfContact = () => {
                             <div className='mt-3'>
                                 Contact #{index + 1}
                             </div>
-                            <li className="list-group-item d-flex justify-content-between">
-                                <div className="d-flex">
-                                    <div className="me-2">
-                                        PHOTO
+                            <li className="list-group-item d-flex flex-column align-items-center flex-sm-row justify-content-sm-between ">
+                                <div className="d-flex flex-column align-items-center justify-content-center flex-sm-row ">
+                                    <div className="me-4">
+                                        <img src={dog} alt='A dog' className='profileImg rounded-circle'/>
                                     </div>
                                     <div>
                                         {item.full_name}
@@ -91,12 +93,13 @@ export const ListOfContact = () => {
                                         {item.email}
                                     </div>
                                 </div>
-                                <div>
+                                <div className="d-flex flex-row flex-sm-column">
                                     {/* EDIT */}
                                     <button
                                         type='button'
                                         data-bs-toggle='modal'
                                         data-bs-target='#editModal'
+                                        className='mb-4'
                                         onClick={() => updateIndContactInfo({ full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
                                     >
                                         Edit
