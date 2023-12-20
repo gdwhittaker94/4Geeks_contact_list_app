@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import "../../styles/index.css";
 import { Context } from '../store/appContext';
-import dog from '../../img/dog.jpg';
+import llama from '../../img/llama.jpg';
 
 
 export const ListOfContact = () => {
@@ -60,14 +60,29 @@ export const ListOfContact = () => {
     return (
         <div className="container">
             {/* HEADER */}
-            <div className="mb-3 d-flex justify-content-between">
-                <h1>{currentBookName}'s List of Contacts</h1>
+            <div className="mb-3 d-flex flex-column align-items-center justify-content-between mt-3 text-white">
+                <h1 className='mb-0 caveat'>{currentBookName}'s List of Contacts</h1>
                 <div>
-                    <Link to={`/addcontact`}>
-                        <button >
-                            Add a new contact
+                <Link to="/" >
+                        <button className="listOfContactsButton listOfContactsButton--home mt-3 me-2">
+                            <span className="circle1"></span>
+                            <span className="circle2"></span>
+                            <span className="circle3"></span>
+                            <span className="circle4"></span>
+                            <span className="circle5"></span>
+                            <span className="text">Home Page</span>
                         </button>
                     </Link>
+                    <Link to={`/addcontact`}>
+                        <button className="listOfContactsButton listOfContactsButton--add mt-3">
+                            <span className="circle1"></span>
+                            <span className="circle2"></span>
+                            <span className="circle3"></span>
+                            <span className="circle4"></span>
+                            <span className="circle5"></span>
+                            <span className="text">Add New Contact</span>
+                        </button>
+                    </Link>                    
                 </div>
             </div>
             {/* LIST */}
@@ -75,15 +90,15 @@ export const ListOfContact = () => {
                 {store.contactsList.map((item, index) => {
                     return (
                         <div key={index}>
-                            <div className='mt-3'>
+                            <h3 className='mt-3 text-white caveat'>
                                 Contact #{index + 1}
-                            </div>
-                            <li className="list-group-item d-flex flex-column align-items-center flex-sm-row justify-content-sm-between ">
+                            </h3>
+                            <li className="contacts-card list-group-item d-flex flex-column align-items-center flex-sm-row justify-content-sm-between ">
                                 <div className="d-flex flex-column align-items-center justify-content-center flex-sm-row ">
                                     <div className="me-4">
-                                        <img src={dog} alt='A dog' className='profileImg rounded-circle'/>
+                                        <img src={llama} alt='A dog' className='profileImg rounded-circle' />
                                     </div>
-                                    <div>
+                                    <div className='caveat contacts-card__text'>
                                         {item.full_name}
                                         <br></br>
                                         {item.address}
@@ -93,13 +108,13 @@ export const ListOfContact = () => {
                                         {item.email}
                                     </div>
                                 </div>
-                                <div className="d-flex flex-row flex-sm-column">
+                                <div className="d-flex align-items-center flex-row flex-sm-column">
                                     {/* EDIT */}
                                     <button
                                         type='button'
                                         data-bs-toggle='modal'
                                         data-bs-target='#editModal'
-                                        className='mb-4'
+                                        className='contacts-card-button contacts-card-button--edit me-4 me-sm-1 mt-3 mt-sm-0 mb-sm-4'
                                         onClick={() => updateIndContactInfo({ full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
                                     >
                                         Edit
@@ -182,6 +197,7 @@ export const ListOfContact = () => {
                                         type='button'
                                         data-bs-toggle='modal'
                                         data-bs-target='#checkModal'
+                                        className='contacts-card-button contacts-card-button--delete mt-3 mt-sm-0 me-sm-1'
                                         onClick={() => updateIndContactInfo({ full_name: item.full_name, address: item.address, phone: item.phone, email: item.email, agenda_slug: item.agenda_slug, id: item.id })}
                                     >
                                         Delete
@@ -224,10 +240,7 @@ export const ListOfContact = () => {
                     );
                 })}
             </ul>
-            {/* HOME LINK  */}
-            <div className="mt-3 text-center">
-                <Link to="/" >Home</Link>
-            </div>
+
             {/* DELETE ALL CONTACTS */}
             <div className="mt-3 text-center">
                 <button
