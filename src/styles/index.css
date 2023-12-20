@@ -15,14 +15,14 @@ body {
 
 @keyframes backgroundMovement {
     0% {
-        background-position: 60% 0%;
+        background-position: 50% 0%;
     }
     50% {
-        background-position: 40% 0%;
+        background-position: 35% 0%;
 
     }
     100% { 
-        background-position: 60% 0%;
+        background-position: 50% 0%;
     }
 }
 
@@ -57,9 +57,13 @@ body {
 }
 
 .contactBookInput {
-    border-radius: 5px;
-    border-color: purple;
+    border-radius: 10px;
+    border: solid 2px black;
     border-style: solid;
+    color: purple;
+    font-weight: bold;
+    padding: 5px;
+    transition: outline 300ms;
     text-align: center;
 }
 
@@ -128,7 +132,7 @@ body {
 .contactBookList {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     grid-auto-rows: 250px;
     padding-left: 0;
     gap: 20px;
@@ -177,6 +181,7 @@ body {
     font-size: 35px;
     margin-bottom: 0px;
     font-weight: bold;
+    overflow: hidden;
 }
 .contactBookList__text:nth-child(2) {
     text-decoration-line:underline
@@ -238,7 +243,7 @@ body {
     transition: 200ms ease-out;
   }
 
-  .listOfContactsButton--home span:not(:nth-child(6)) {
+  .listOfContactsButton--home span:not(:nth-child(6)), .listOfContactsButton--return span:not(:nth-child(6)) {
     background-color: #2686f5;
     transition: 300ms ease-out;
   }
@@ -287,8 +292,9 @@ body {
 }
 
 .contacts-card:hover {
-    transform: scale(1.02);
-    box-shadow: 6px 6px 12px 0px black;
+  background-color: #fbac7f;
+  background-image: linear-gradient(270deg, #fd9b62 0%, rgb(255, 212, 102) 40%);
+  box-shadow: 6px 6px 12px 0px black;
 }
 
 .profileImg {
@@ -303,10 +309,9 @@ body {
 
 /* EDIT BUTTON */
 .contacts-card-button {
-    font-family: var(--roboto);
     border: none;
     font-size: 30px;
-    font-family: 'Caveat';
+    font-family: var(--caveat);
     color: white;
     padding: 0px 10px;
     border-radius: 20px;
@@ -323,24 +328,73 @@ body {
     background: #3c8f42;
 }
 
-.contacts-card-button--delete {
+.contacts-card-button--delete, .contacts-card-button--deleteAll {
     background: #ab1930;
+}
+
+.contacts-card-button--deleteAll {
+  border: solid 2px #d71f1f;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.contacts-card-button--deleteAll:hover {
+  box-shadow: none;
+}
+
+.contacts-card-button--submit {
+  background: #2686f5;
+}
+
+.height100 {
+  height: 100vh;
 }
 
 /* ----------------------------------------------------------- */
 /* ADD CONTACT */
 
+.newContactSize {
+  height: 100vh;
+  max-width: 600px;
+}
 
+.newContactLabel {
+  font-size: 30px;
+  margin-bottom: 3px;
+}
+
+.newContactInput {
+  border-radius: 10px;
+  border: solid 2px white;
+  border-style: solid;
+  color: purple;
+  font-weight: bold;
+  padding: 8px;
+  transition: outline 300ms;
+}
+
+.newContactInput:focus-within {
+  outline: double 7px orange;
+}
+
+.newContactInput::placeholder {
+  color: rgba(128, 0, 128, 0.672);
+  font-family: var(--roboto);
+}
+
+
+/* ----------------------------------------------------------- */
+/* MEDIA QUERIES */
 @media screen and (max-width: 575px) {
     
     .header p {
         margin-bottom: 10px;
     }
 }
-
+/* 
 @media screen and (min-width: 1000px) {
     
     body {
         height: 105vh;
     }
-}
+} */

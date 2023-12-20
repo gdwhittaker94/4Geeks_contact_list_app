@@ -5,7 +5,6 @@ import "../../styles/index.css";
 import { Context } from '../store/appContext';
 import llama from '../../img/llama.jpg';
 
-
 export const ListOfContact = () => {
 
     const { id } = useParams();
@@ -58,12 +57,12 @@ export const ListOfContact = () => {
 
 
     return (
-        <div className="container">
+        <div className="container height100">
             {/* HEADER */}
             <div className="mb-3 d-flex flex-column align-items-center justify-content-between mt-3 text-white">
                 <h1 className='mb-0 caveat'>{currentBookName}'s List of Contacts</h1>
-                <div>
-                <Link to="/" >
+                <div className='text-center'>
+                    <Link to="/" >
                         <button className="listOfContactsButton listOfContactsButton--home mt-3 me-2">
                             <span className="circle1"></span>
                             <span className="circle2"></span>
@@ -82,7 +81,7 @@ export const ListOfContact = () => {
                             <span className="circle5"></span>
                             <span className="text">Add New Contact</span>
                         </button>
-                    </Link>                    
+                    </Link>
                 </div>
             </div>
             {/* LIST */}
@@ -247,8 +246,9 @@ export const ListOfContact = () => {
                     type='button'
                     data-bs-toggle='modal'
                     data-bs-target='#deleteAllModal'
+                    className='contacts-card-button contacts-card-button--deleteAll mt-4 mb-5'
                 >
-                    Delete all contacts
+                    Delete ALL contacts
                 </button>
 
                 {/* DELETE MODAL */}
