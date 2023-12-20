@@ -4,3 +4,7 @@ This project was designed to introduce us to the concept of global state - stori
 This project ended up being a lot more challenging than I initially imagined, but this is also a result of going above what I was asked to do. For example, using modals in order to edit and delete contacts on the list of contacts page, or making a big effort to make the design and feel of the app nice. 
 
 The project can be seen below or at the [live version](INSERT LINK HERE)
+
+https://github.com/gdwhittaker94/4Geeks_contact_list_app/assets/105855731/e555cbda-e17e-41ef-98cb-78f32a981a84
+
+
