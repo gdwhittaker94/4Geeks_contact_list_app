@@ -32,7 +32,7 @@ export const ContactBookList = () => {
     }, []);
 
     return (
-        <div className="container pb-4 text-center">
+        <div className="container pb-4 text-center height100">
             <div className="header flex-column flex-sm-row">
                 <p>Create a new contact book {width < 575 ? '⬇' : '➡'}
                 </p>
