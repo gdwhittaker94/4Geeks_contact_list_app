@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import "../../styles/index.css";
 import { Context } from '../store/appContext';
-import llama from '../../img/llama.jpg';
+// import llama from '../../img/llama.jpg'; *Changed as not working on live version 
 
 export const ListOfContact = () => {
 
