@@ -95,7 +95,7 @@ export const ListOfContact = () => {
                             <li className="contacts-card list-group-item d-flex flex-column align-items-center flex-sm-row justify-content-sm-between ">
                                 <div className="d-flex flex-column align-items-center justify-content-center flex-sm-row ">
                                     <div className="me-4">
-                                        <img src={llama} alt='A dog' className='profileImg rounded-circle' />
+                                        <img src={llama} alt='Photo of a cool llama' className='profileImg rounded-circle' />
                                     </div>
                                     <div className='caveat contacts-card__text'>
                                         {item.full_name}
